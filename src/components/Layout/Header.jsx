@@ -1,10 +1,11 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from '../../hooks/useAuth'
 import SafeIcon from '../../common/SafeIcon'
 import * as FiIcons from 'react-icons/fi'
 
-const { FiLogOut, FiUser, FiFilm } = FiIcons
+const { FiLogOut, FiUser, FiFilm, FiHome } = FiIcons
 
 const Header = () => {
   const { user, signOut } = useAuth()
@@ -28,13 +29,19 @@ const Header = () => {
           </div>
 
           <div className="flex items-center gap-4">
+            <Link
+              to="/"
+              className="p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+              title="Home"
+            >
+              <SafeIcon icon={FiHome} className="w-5 h-5" />
+            </Link>
             <div className="flex items-center gap-2 text-gray-700">
               <SafeIcon icon={FiUser} className="w-4 h-4" />
               <span className="text-sm font-medium">
                 {user?.user_metadata?.display_name || user?.email}
               </span>
             </div>
-            
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

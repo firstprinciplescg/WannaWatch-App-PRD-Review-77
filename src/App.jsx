@@ -1,9 +1,9 @@
 import React from 'react'
 import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
+import LandingPage from './pages/LandingPage'
+import WannaWatchApp from './pages/WannaWatchApp'
 import AuthForm from './components/Auth/AuthForm'
-import Header from './components/Layout/Header'
-import MovieList from './components/Movies/MovieList'
 import './App.css'
 
 function App() {
@@ -17,21 +17,15 @@ function App() {
     )
   }
 
-  if (!user) {
-    return <AuthForm />
-  }
-
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <main>
-          <Routes>
-            <Route path="/" element={<MovieList />} />
-            <Route path="/movies" element={<MovieList />} />
-          </Routes>
-        </main>
-      </div>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route 
+          path="/app/*" 
+          element={user ? <WannaWatchApp /> : <AuthForm />} 
+        />
+      </Routes>
     </Router>
   )
 }
