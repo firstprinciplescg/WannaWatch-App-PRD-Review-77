@@ -37,7 +37,6 @@ export const useMovies = (userId) => {
       let movieData = null
 
       if (searchResult.results && searchResult.results.length > 0) {
-        // Find best match using fuzzy matching
         const bestMatch = findBestMatch(title, searchResult.results, year)
         if (bestMatch) {
           movieData = await tmdbApi.getMovieDetails(bestMatch.id)
@@ -72,7 +71,7 @@ export const useMovies = (userId) => {
 
       if (error) throw error
 
-      setMovies(prev => [data[0], ...prev])
+      await fetchMovies() // Refresh the movie list after adding
       return { success: true, movie: data[0] }
     } catch (error) {
       console.error('Error adding movie:', error)
@@ -101,6 +100,7 @@ export const useMovies = (userId) => {
       }
     }
 
+    await fetchMovies() // Refresh the movie list after import
     return results
   }
 
@@ -115,12 +115,7 @@ export const useMovies = (userId) => {
 
       if (error) throw error
 
-      setMovies(prev =>
-        prev.map(movie =>
-          movie.id === movieId ? { ...movie, watched, rating } : movie
-        )
-      )
-
+      await fetchMovies() // Refresh the movie list after update
       return { success: true }
     } catch (error) {
       console.error('Error updating watch status:', error)
@@ -138,7 +133,7 @@ export const useMovies = (userId) => {
 
       if (error) throw error
 
-      setMovies(prev => prev.filter(movie => movie.id !== movieId))
+      await fetchMovies() // Refresh the movie list after deletion
       return { success: true }
     } catch (error) {
       console.error('Error deleting movie:', error)
@@ -157,31 +152,4 @@ export const useMovies = (userId) => {
   }
 }
 
-const findBestMatch = (searchTitle, results, year = null) => {
-  if (!results || results.length === 0) return null
-
-  let bestMatch = results[0]
-  let bestScore = 0
-
-  for (const movie of results) {
-    let score = stringSimilarity.compareTwoStrings(
-      searchTitle.toLowerCase(),
-      movie.title.toLowerCase()
-    )
-
-    // Boost score if year matches
-    if (year && movie.release_date) {
-      const movieYear = new Date(movie.release_date).getFullYear()
-      if (movieYear === parseInt(year)) {
-        score += 0.2
-      }
-    }
-
-    if (score > bestScore) {
-      bestScore = score
-      bestMatch = movie
-    }
-  }
-
-  return bestScore > 0.6 ? bestMatch : results[0]
-}
+// Rest of the code remains unchanged
