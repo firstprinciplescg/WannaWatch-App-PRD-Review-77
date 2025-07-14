@@ -12,10 +12,14 @@ export const useAdmin = () => {
 
   const checkAdminStatus = async () => {
     try {
-      const { data: adminUser } = await supabase
+      const { data: adminUser, error } = await supabase
         .from('admin_users_x7y9z')
         .select('is_super_admin')
         .single()
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error checking admin status:', error)
+      }
 
       setIsAdmin(!!adminUser)
       setIsSuperAdmin(adminUser?.is_super_admin || false)
@@ -37,6 +41,7 @@ export const useAdmin = () => {
       .from('auth.users')
       .select('*')
       .order('created_at', { ascending: false })
+
     if (error) throw error
     return data
   }
@@ -44,22 +49,19 @@ export const useAdmin = () => {
   const addAdmin = async (email, isSuperAdmin = false) => {
     try {
       // First, ensure user exists
-      const { data: user } = await supabase
+      const { data: user, error: userError } = await supabase
         .from('auth.users')
         .select('id')
         .eq('email', email)
         .single()
 
-      if (!user) throw new Error('User not found')
+      if (userError || !user) throw new Error('User not found')
 
       // Add admin role
       const { error } = await supabase
         .from('admin_users_x7y9z')
         .insert([
-          {
-            user_id: user.id,
-            is_super_admin: isSuperAdmin
-          }
+          { user_id: user.id, is_super_admin: isSuperAdmin }
         ])
 
       if (error) throw error

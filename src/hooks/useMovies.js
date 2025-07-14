@@ -16,7 +16,7 @@ export const useMovies = (userId) => {
   const fetchMovies = async () => {
     try {
       const { data, error } = await supabase
-        .from('movies')
+        .from('movies_x9k7m2')
         .select('*')
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
@@ -62,7 +62,7 @@ export const useMovies = (userId) => {
       }
 
       const { data, error } = await supabase
-        .from('movies')
+        .from('movies_x9k7m2')
         .insert([{
           user_id: userId,
           title: movieData?.title || title,
@@ -71,7 +71,7 @@ export const useMovies = (userId) => {
         .select()
 
       if (error) throw error
-      
+
       setMovies(prev => [data[0], ...prev])
       return { success: true, movie: data[0] }
     } catch (error) {
@@ -82,7 +82,7 @@ export const useMovies = (userId) => {
 
   const importMovies = async (csvData) => {
     const results = { imported: 0, updated: 0, errors: [] }
-    
+
     for (const row of csvData) {
       try {
         if (!row.title || row.title.trim() === '') {
@@ -107,7 +107,7 @@ export const useMovies = (userId) => {
   const updateWatchStatus = async (movieId, watched, rating = null) => {
     try {
       const { data, error } = await supabase
-        .from('movies')
+        .from('movies_x9k7m2')
         .update({ watched, rating })
         .eq('id', movieId)
         .eq('user_id', userId)
@@ -115,11 +115,9 @@ export const useMovies = (userId) => {
 
       if (error) throw error
 
-      setMovies(prev => 
-        prev.map(movie => 
-          movie.id === movieId 
-            ? { ...movie, watched, rating }
-            : movie
+      setMovies(prev =>
+        prev.map(movie =>
+          movie.id === movieId ? { ...movie, watched, rating } : movie
         )
       )
 
@@ -133,7 +131,7 @@ export const useMovies = (userId) => {
   const deleteMovie = async (movieId) => {
     try {
       const { error } = await supabase
-        .from('movies')
+        .from('movies_x9k7m2')
         .delete()
         .eq('id', movieId)
         .eq('user_id', userId)

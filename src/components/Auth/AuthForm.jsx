@@ -34,7 +34,8 @@ const AuthForm = () => {
         setError(result.error.message)
       }
     } catch (err) {
-      setError('An unexpected error occurred')
+      console.error('Auth error:', err)
+      setError('An unexpected error occurred. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -50,7 +51,8 @@ const AuthForm = () => {
         setError(result.error.message)
       }
     } catch (err) {
-      setError('An unexpected error occurred')
+      console.error('Google sign in error:', err)
+      setError('An unexpected error occurred. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -87,9 +89,9 @@ const AuthForm = () => {
                 Display Name
               </label>
               <div className="relative">
-                <SafeIcon 
-                  icon={FiUser} 
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                <SafeIcon
+                  icon={FiUser}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                 />
                 <input
                   type="text"
@@ -108,9 +110,9 @@ const AuthForm = () => {
               Email
             </label>
             <div className="relative">
-              <SafeIcon 
-                icon={FiMail} 
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
+              <SafeIcon
+                icon={FiMail}
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
               />
               <input
                 type="email"
@@ -128,9 +130,9 @@ const AuthForm = () => {
               Password
             </label>
             <div className="relative">
-              <SafeIcon 
-                icon={FiLock} 
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
+              <SafeIcon
+                icon={FiLock}
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
               />
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -187,10 +189,9 @@ const AuthForm = () => {
             onClick={() => setIsLogin(!isLogin)}
             className="text-primary-600 hover:text-primary-700 font-medium"
           >
-            {isLogin 
-              ? "Don't have an account? Sign up" 
-              : "Already have an account? Sign in"
-            }
+            {isLogin
+              ? "Don't have an account? Sign up"
+              : "Already have an account? Sign in"}
           </button>
         </div>
       </motion.div>
